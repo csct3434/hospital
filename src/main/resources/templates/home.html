@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div class="jumbotron">
+        <h1>HOSPITAL</h1>
+        <p class="lead">환자 메뉴</p>
+        <p>
+            <a class="btn btn-lg" style="color:white; background-color:#51E2F5; border-color:#51E2F5" href="/patients/new">환자 등록</a>
+            <a class="btn btn-lg" style="color:white; background-color:#51E2F5; border-color:#51E2F5" href="/patients">환자 목록</a>
+        </p>
+        <p class="lead">병원 메뉴</p>
+        <p>
+            <a class="btn btn-lg" style="color:white; background-color:#9DF9EF; border-color:#9DF9EF" href="/hospitals/new">병원 등록</a>
+            <a class="btn btn-lg" style="color:white; background-color:#9DF9EF; border-color:#9DF9EF" href="/hospitals">병원 목록</a>
+        </p>
+        <p class="lead">부서 메뉴</p>
+        <p>
+            <a class="btn btn-lg" style="color:white; background-color:#DED7F7; border-color:#DED7F7" href="/departments/new">부서 등록</a>
+            <a class="btn btn-lg" style="color:white; background-color:#DED7F7; border-color:#DED7F7" href="/departments">부서 목록</a>
+        </p>
+        <p class="lead">의사 메뉴</p>
+        <p>
+            <a class="btn btn-lg" style="color:white; background-color:#FFA8B6; border-color:#FFA8B6" href="/doctors/new">의사 등록</a>
+            <a class="btn btn-lg" style="color:white; background-color:#FFA8B6; border-color:#FFA8B6" href="/doctors">의사 목록</a>
+        </p>
+        <p class="lead">예약 메뉴</p>
+        <p>
+            <a class="btn btn-lg" style="color:white; background-color:#FF3EA5; border-color:#FF3EA5" href="/reservations/new">예약 등록</a>
+            <a class="btn btn-lg" style="color:white; background-color:#FF3EA5; border-color:#FF3EA5" href="/reservations">예약 목록</a>
+        </p>
+    </div>
+    <div th:replace="fragments/footer :: footer" />
+</div> <!-- /container -->
+</body>
+</html>

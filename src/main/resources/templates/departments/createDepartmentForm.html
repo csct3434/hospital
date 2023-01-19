@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form role="form" action="/departments/new" th:object="${departmentForm}" method="post">
+        <div class="form-group">
+            <label th:for="name">이름</label>
+            <input type="text" th:field="*{name}" class="form-control"
+                   placeholder="이름을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="phoneNumber">전화번호</label>
+            <input type="text" th:field="*{phoneNumber}" class="form-control"
+                   placeholder="전화번호를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="hospitalId">병원</label>
+            <input list="hospitals" class="form-control" th:field="*{hospitalId}"/>
+            <datalist id="hospitals">
+                <option th:each="hospitalDto : ${hospitalDtoList}" th:value="${hospitalDto.id}" th:label="${hospitalDto.name}">
+            </datalist>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer" />
+</div> <!-- /container -->
+</body>
+</html>
