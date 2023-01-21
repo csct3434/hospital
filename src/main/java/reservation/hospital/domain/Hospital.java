@@ -21,17 +21,27 @@ public class Hospital {
 
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.REMOVE)
     private List<Department> departments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.REMOVE)
     private List<Doctor> doctors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hospital")
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.REMOVE)
     private List<Reservation> reservations = new ArrayList<>();
 
     public static Hospital create(String name, Address address, String phoneNumber) {
         Hospital hospital = new Hospital();
+        hospital.name = name;
+        hospital.address = address;
+        hospital.phoneNumber = phoneNumber;
+
+        return hospital;
+    }
+
+    public static Hospital create(Long id, String name, Address address, String phoneNumber) {
+        Hospital hospital = new Hospital();
+        hospital.id = id;
         hospital.name = name;
         hospital.address = address;
         hospital.phoneNumber = phoneNumber;
@@ -44,16 +54,9 @@ public class Hospital {
         department.setHospital(this);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public void addDoctor(Doctor doctor) {
         this.doctors.add(doctor);
         doctor.setHospital(this);
     }
+
 }

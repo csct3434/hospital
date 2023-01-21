@@ -44,4 +44,5 @@ public class DepartmentController {
         model.addAttribute("departmentDtoList", departmentDtoList);
         return "departments/departmentList";
     }
+
 }

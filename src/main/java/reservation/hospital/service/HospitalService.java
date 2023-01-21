@@ -36,14 +36,31 @@ public class HospitalService {
         return hospitalRepository.findByName(name);
     }
 
+    public HospitalDto getHospitalDto(Long hospitalId) {
+        Hospital hospital = hospitalRepository.findOne(hospitalId);
+
+        HospitalDto hospitalDto = new HospitalDto(hospital.getId(), hospital.getName(),
+                hospital.getAddress().getCity(), hospital.getAddress().getStreet(),
+                hospital.getAddress().getZipcode(), hospital.getPhoneNumber());
+
+        return hospitalDto;
+    }
+
     public List<HospitalDto> getHospitalDtoList() {
         List<Hospital> hospitalList = hospitalRepository.findAll();
         List<HospitalDto> hospitalDtoList = new ArrayList<>();
 
         for (Hospital hospital : hospitalList) {
-            hospitalDtoList.add(new HospitalDto(hospital.getId(), hospital.getName(), hospital.getAddress(), hospital.getPhoneNumber()));
+            hospitalDtoList.add(new HospitalDto(hospital.getId(), hospital.getName(),
+                    hospital.getAddress().getCity(), hospital.getAddress().getStreet(),
+                    hospital.getAddress().getZipcode(), hospital.getPhoneNumber()));
         }
 
         return hospitalDtoList;
+    }
+
+    @Transactional
+    public void remove(Long hospitalId) {
+        hospitalRepository.remove(hospitalId);
     }
 }

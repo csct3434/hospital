@@ -4,7 +4,8 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/hospitals/new" th:object="${hospitalDto}" method="post">
+    <form role="form" th:object="${hospitalDto}" method="post">
+        <input type="hidden" th:field="*{id}" />
         <div class="form-group">
             <label th:for="name">이름</label>
             <input type="text" th:field="*{name}" class="form-control"
@@ -31,6 +32,9 @@
                    placeholder="전화번호를 입력하세요">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary"
+                th:onclick="|location.href='@{/hospitals/{id}/remove (id=${hospitalDto.id})}'|">
+            Remove</button>
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer" />

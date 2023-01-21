@@ -1,11 +1,12 @@
 package reservation.hospital.conroller.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import reservation.hospital.domain.ReservationStatus;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Setter
 public class ReservationDto {
 
     private Long id;

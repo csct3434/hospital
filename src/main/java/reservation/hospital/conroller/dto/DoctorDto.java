@@ -1,8 +1,9 @@
 package reservation.hospital.conroller.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class DoctorDto {
 
     private Long id;

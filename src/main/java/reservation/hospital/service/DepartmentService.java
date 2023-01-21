@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reservation.hospital.conroller.dto.DepartmentDto;
+import reservation.hospital.conroller.dto.PatientDto;
 import reservation.hospital.domain.Department;
 import reservation.hospital.domain.Hospital;
 import reservation.hospital.repository.DepartmentRepository;
@@ -45,15 +46,23 @@ public class DepartmentService {
     }
 
     public List<DepartmentDto> getDepartmentDtoList() {
-        List<Department> departmentList = findAll();
+        List<Department> departmentList = departmentRepository.findAll();
         List<DepartmentDto> departmentDtoList = new ArrayList<>();
 
         for (Department department : departmentList) {
             DepartmentDto departmentDto = new DepartmentDto(department.getId(), department.getName(),
-                    department.getPhoneNumber(), department.getHospital().getName());
+                    department.getPhoneNumber(), department.getHospital().getId(), department.getHospital().getName());
             departmentDtoList.add(departmentDto);
         }
 
         return departmentDtoList;
     }
+
+    public DepartmentDto getDepartmentDto(Long departmentId) {
+        Department department = departmentRepository.findOne(departmentId);
+
+        return new DepartmentDto(department.getId(), department.getName(), department.getPhoneNumber(),
+                department.getHospital().getId(), department.getHospital().getName());
+    }
+
 }
