@@ -22,4 +22,14 @@ public class DepartmentDto {
         this.hospitalName = hospitalName;
     }
 
+    @Override
+    public String toString() {
+        return "DepartmentDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", hospitalId=" + hospitalId +
+                ", hospitalName='" + hospitalName + '\'' +
+                '}';
+    }
 }

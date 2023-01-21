@@ -10,8 +10,9 @@
             <tr>
                 <th>#</th>
                 <th>병원</th>
-                <th>이름</th>
+                <th>부서</th>
                 <th>전화번호</th>
+                <th>    </th>
             </tr>
             </thead>
             <tbody>
@@ -21,6 +22,10 @@
                 <!-- <td th:text="${department.hospital?.name}"></td>  could not initialize proxy - no Session 발생 -->
                 <td th:text="${departmentDto.name}"></td>
                 <td th:text="${departmentDto.phoneNumber}"></td>
+                <td>
+                    <a href="#" th:href="@{/departments/{id}/edit (id=${departmentDto.id})}"
+                       class="btn btn-primary" role="button">수정</a>
+                </td>
             </tr>
             </tbody>
         </table>
