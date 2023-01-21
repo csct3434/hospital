@@ -4,7 +4,8 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/doctors/new" th:object="${doctorDto}" method="post">
+    <form role="form" th:object="${doctorDto}" method="post">
+        <input type="hidden" th:field="*{id}" />
         <div class="form-group">
             <label th:for="name">이름</label>
             <input type="text" th:field="*{name}" class="form-control"
@@ -16,8 +17,9 @@
                    placeholder="라이센스를 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="experience">연차</label>
-            <input type="number" th:field="*{experience}" class="form-control">
+            <label th:for="experience">경력</label>
+            <input type="text" th:field="*{experience}" class="form-control"
+                   placeholder="경력을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="hospitalId">병원</label>
@@ -35,6 +37,9 @@
             </datalist>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary"
+                th:onclick="|location.href='@{/doctors/{id}/remove (id=${doctorDto.id})}'|">
+            Remove</button>
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer" />

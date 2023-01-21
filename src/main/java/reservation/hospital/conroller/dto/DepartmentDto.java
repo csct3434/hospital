@@ -19,17 +19,8 @@ public class DepartmentDto {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.hospitalId = hospitalId;
         this.hospitalName = hospitalName;
     }
 
-    @Override
-    public String toString() {
-        return "DepartmentDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", hospitalId=" + hospitalId +
-                ", hospitalName='" + hospitalName + '\'' +
-                '}';
-    }
 }

@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import reservation.hospital.conroller.dto.DepartmentDto;
 import reservation.hospital.conroller.dto.DoctorDto;
 import reservation.hospital.conroller.dto.HospitalDto;
-import reservation.hospital.conroller.form.DoctorForm;
+import reservation.hospital.domain.Department;
 import reservation.hospital.domain.Doctor;
 import reservation.hospital.service.DepartmentService;
 import reservation.hospital.service.DoctorService;
@@ -28,18 +29,18 @@ public class DoctorController {
     public String createForm(Model model) {
         List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
         List<DepartmentDto> departmentDtoList = departmentService.getDepartmentDtoList();
-        DoctorForm doctorForm = new DoctorForm();
+        DoctorDto doctorDto = new DoctorDto();
 
         model.addAttribute("hospitalDtoList", hospitalDtoList);
         model.addAttribute("departmentDtoList", departmentDtoList);
-        model.addAttribute("doctorForm", doctorForm);
+        model.addAttribute("doctorDto", doctorDto);
         return "doctors/createDoctorForm";
     }
 
     @PostMapping("/doctors/new")
-    public String create(DoctorForm doctorForm, Model model) {
-        Doctor doctor = Doctor.create(doctorForm.getName(), doctorForm.getLicenseId(), doctorForm.getExperience());
-        doctorService.join(doctor, doctorForm.getHospitalId(), doctorForm.getDepartmentId());
+    public String create(DoctorDto doctorDto, Model model) {
+        Doctor doctor = Doctor.create(doctorDto.getName(), doctorDto.getLicenseId(), doctorDto.getExperience());
+        doctorService.join(doctor, doctorDto.getHospitalId(), doctorDto.getDepartmentId());
         return "redirect:/";
     }
 
@@ -49,4 +50,30 @@ public class DoctorController {
         model.addAttribute("doctorDtoList", doctorDtoList);
         return "doctors/doctorList";
     }
+
+    @GetMapping("doctors/{doctorId}/edit")
+    public String updateForm(@PathVariable("doctorId") Long doctorId, Model model) {
+        DoctorDto doctorDto = doctorService.getDoctorDto(doctorId);
+        List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
+        List<DepartmentDto> departmentDtoList = departmentService.getDepartmentDtoList();
+
+        model.addAttribute("doctorDto", doctorDto);
+        model.addAttribute("hospitalDtoList", hospitalDtoList);
+        model.addAttribute("departmentDtoList", departmentDtoList);
+        return "doctors/updateDoctorForm.html";
+    }
+
+    @PostMapping("doctors/{doctorId}/edit")
+    public String update(DoctorDto doctorDto) {
+        Doctor doctor = Doctor.create(doctorDto.getId(), doctorDto.getName(), doctorDto.getLicenseId(), doctorDto.getExperience());
+        doctorService.join(doctor, doctorDto.getHospitalId(), doctorDto.getDepartmentId());
+        return "redirect:/";
+    }
+
+    @GetMapping("doctors/{doctorId}/remove")
+    public String remove(@PathVariable("doctorId") Long doctorId, Model model) {
+        doctorService.remove(doctorId);
+        return "redirect:/";
+    }
+
 }
