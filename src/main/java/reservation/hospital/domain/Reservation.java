@@ -53,6 +53,21 @@ public class Reservation {
         return reservation;
     }
 
+    public static Reservation create(Long id, Patient patient, Hospital hospital, Department department,
+                                     Doctor doctor, LocalDateTime reservationTime, ReservationStatus status, int fee) {
+        Reservation reservation = new Reservation();
+        reservation.id = id;
+        reservation.patient = patient;
+        reservation.hospital = hospital;
+        reservation.department = department;
+        reservation.doctor = doctor;
+        reservation.reservationTime = reservationTime;
+        reservation.status = status;
+        reservation.fee = fee;
+
+        return reservation;
+    }
+
     public void cancel() {
         this.status = ReservationStatus.CANCELED;
     }

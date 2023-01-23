@@ -67,7 +67,7 @@ public class DoctorController {
     public String update(DoctorDto doctorDto) {
         Doctor doctor = Doctor.create(doctorDto.getId(), doctorDto.getName(), doctorDto.getLicenseId(), doctorDto.getExperience());
         doctorService.join(doctor, doctorDto.getHospitalId(), doctorDto.getDepartmentId());
-        return "redirect:/";
+        return "redirect:/doctors";
     }
 
     @GetMapping("doctors/{doctorId}/remove")

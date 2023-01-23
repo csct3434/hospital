@@ -16,6 +16,8 @@
                 <th>예약시간</th>
                 <th>예약상태</th>
                 <th>요금</th>
+                <th>    </th>
+                <th>    </th>
             </tr>
             </thead>
             <tbody>
@@ -28,6 +30,14 @@
                 <td th:text="${reservationDto.reservationTime}"></td>
                 <td th:text="${reservationDto.status}"></td>
                 <td th:text="${reservationDto.fee}"></td>
+                <td>
+                    <a href="#" th:href="@{/reservations/{id}/edit (id=${reservationDto.id})}"
+                       class="btn btn-primary" role="button">수정</a>
+                </td>
+                <td>
+                    <a href="#" th:href="@{/reservations/{id}/complete (id=${reservationDto.id})}"
+                       class="btn btn-primary" role="button">수납</a>
+                </td>
             </tr>
             </tbody>
         </table>

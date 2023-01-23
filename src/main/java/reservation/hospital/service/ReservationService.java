@@ -23,14 +23,17 @@ public class ReservationService {
     public final DoctorRepository doctorRepository;
 
     @Transactional
-    public Long join(Long patientId, Long hospitalId, Long departmentId, Long doctorId, LocalDateTime reservationTime) {
-        Patient patient = patientRepository.findOne(patientId);
-        Hospital hospital = hospitalRepository.findOne(hospitalId);
-        Department department = departmentRepository.findOne(departmentId);
-        Doctor doctor = doctorRepository.findOne(doctorId);
+    public Long join(ReservationDto reservationDto) {
+        Patient patient = patientRepository.findOne(reservationDto.getPatientId());
+        Hospital hospital = hospitalRepository.findOne(reservationDto.getHospitalId());
+        Department department = departmentRepository.findOne(reservationDto.getDepartmentId());
+        Doctor doctor = doctorRepository.findOne(reservationDto.getDoctorId());
 
-        Reservation reservation = Reservation.create(patient, hospital, department, doctor, reservationTime, ReservationStatus.RESERVED, 0);
+        Reservation reservation = Reservation.create(reservationDto.getId(), patient, hospital, department, doctor,
+                reservationDto.getReservationTime(), ReservationStatus.RESERVED, 0);
+
         reservationRepository.save(reservation);
+
         return reservation.getId();
     }
 
@@ -46,14 +49,17 @@ public class ReservationService {
         return reservationRepository.findByPatientName(name);
     }
 
-    public void cancel(Long id) {
-        Reservation reservation = reservationRepository.findOne(id);
-        reservation.cancel();
-    }
+    public ReservationDto getReservationDto(Long reservationId) {
+        Reservation reservation = reservationRepository.findOne(reservationId);
 
-    public void complete(Long id, int fee) {
-        Reservation reservation = reservationRepository.findOne(id);
-        reservation.complete(fee);
+        ReservationDto reservationDto = new ReservationDto(reservation.getId(),
+                reservation.getPatient().getId(), reservation.getPatient().getName(),
+                reservation.getHospital().getId(),reservation.getHospital().getName(),
+                reservation.getDepartment().getId(),reservation.getDepartment().getName(),
+                reservation.getDoctor().getId(), reservation.getDoctor().getName(),
+                reservation.getReservationTime(), reservation.getStatus(), reservation.getFee());
+
+        return reservationDto;
     }
 
     public List<ReservationDto> getReservationDtoList() {
@@ -61,8 +67,11 @@ public class ReservationService {
         List<ReservationDto> reservationDtoList = new ArrayList<>();
 
         for (Reservation reservation : reservationList) {
-            ReservationDto reservationDto = new ReservationDto(reservation.getId(), reservation.getPatient().getName(), reservation.getHospital().getName(),
-                    reservation.getDepartment().getName(), reservation.getDoctor().getName(),
+            ReservationDto reservationDto = new ReservationDto(reservation.getId(),
+                    reservation.getPatient().getId(), reservation.getPatient().getName(),
+                    reservation.getHospital().getId(),reservation.getHospital().getName(),
+                    reservation.getDepartment().getId(),reservation.getDepartment().getName(),
+                    reservation.getDoctor().getId(), reservation.getDoctor().getName(),
                     reservation.getReservationTime(), reservation.getStatus(), reservation.getFee());
 
             reservationDtoList.add(reservationDto);
@@ -70,4 +79,42 @@ public class ReservationService {
 
         return reservationDtoList;
     }
+
+    @Transactional
+    public void cancel(Long id) {
+        Reservation reservation = reservationRepository.findOne(id);
+
+        try {
+            if (reservation.getStatus() == ReservationStatus.COMPLETED) {
+                throw new IllegalStateException("정산된 예약은 취소할 수 없습니다.");
+            } else {
+                reservation.cancel();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void remove(Long reservationId) {
+        reservationRepository.remove(reservationId);
+    }
+
+    @Transactional
+    public void complete(Long id, int fee) {
+        Reservation reservation = reservationRepository.findOne(id);
+
+        try {
+            if(reservation.getStatus() == ReservationStatus.CANCELED) {
+                throw new IllegalStateException("취소된 예약은 수납할 수 없습니다.");
+            } else if(reservation.getStatus() == ReservationStatus.COMPLETED) {
+                throw new IllegalStateException("이미 정산된 예약입니다.");
+            } else {
+                reservation.complete(fee);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
