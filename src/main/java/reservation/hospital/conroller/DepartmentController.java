@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import reservation.hospital.conroller.dto.DepartmentDto;
 import reservation.hospital.conroller.dto.HospitalDto;
-import reservation.hospital.conroller.form.DepartmentForm;
+import reservation.hospital.domain.Address;
 import reservation.hospital.domain.Department;
+import reservation.hospital.domain.Hospital;
 import reservation.hospital.service.DepartmentService;
 import reservation.hospital.service.HospitalService;
 
@@ -25,15 +27,15 @@ public class DepartmentController {
     public String createForm(Model model) {
         List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
 
-        model.addAttribute("departmentForm", new DepartmentForm());
+        model.addAttribute("departmentDto", new DepartmentDto());
         model.addAttribute("hospitalDtoList", hospitalDtoList);
         return "departments/createDepartmentForm";
     }
 
     @PostMapping("departments/new")
-    public String create(DepartmentForm departmentForm, Model model) {
-        Department department = Department.create(departmentForm.getName(), departmentForm.getPhoneNumber());
-        departmentService.join(department, departmentForm.getHospitalId());
+    public String create(DepartmentDto departmentDto, Model model) {
+        Department department = Department.create(departmentDto.getName(), departmentDto.getPhoneNumber());
+        departmentService.join(department, departmentDto.getHospitalId());
         return "redirect:/";
     }
 
@@ -43,5 +45,29 @@ public class DepartmentController {
 
         model.addAttribute("departmentDtoList", departmentDtoList);
         return "departments/departmentList";
+    }
+
+    @GetMapping("departments/{departmentId}/edit")
+    public String updateForm(@PathVariable("departmentId") Long departmentId, Model model) {
+        DepartmentDto departmentDto = departmentService.getDepartmentDto(departmentId);
+        List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
+
+        model.addAttribute("departmentDto", departmentDto);
+        model.addAttribute("hospitalDtoList", hospitalDtoList);
+
+        return "departments/updateDepartmentForm.html";
+    }
+
+    @PostMapping("departments/{departmentId}/edit")
+    public String update(DepartmentDto departmentDto, Model model) {
+        Department department = Department.create(departmentDto.getId(), departmentDto.getName(), departmentDto.getPhoneNumber());
+        departmentService.join(department, departmentDto.getHospitalId());
+        return "redirect:/";
+    }
+
+    @GetMapping("departments/{departmentId}/remove")
+    public String remove(@PathVariable("departmentId") Long departmentId, Model model) {
+        departmentService.remove(departmentId);
+        return "redirect:/";
     }
 }

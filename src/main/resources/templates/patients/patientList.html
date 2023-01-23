@@ -16,6 +16,7 @@
                 <th>거리</th>
                 <th>우편번호</th>
                 <th>전화번호</th>
+                <th>    </th>
             </tr>
             </thead>
             <tbody>
@@ -24,10 +25,14 @@
                 <td th:text="${patientDto.name}"></td>
                 <td th:text="${patientDto.age}"></td>
                 <td th:text="${patientDto.sex}"></td>
-                <td th:text="${patientDto.address?.city}"></td>
-                <td th:text="${patientDto.address?.street}"></td>
-                <td th:text="${patientDto.address?.zipcode}"></td>
+                <td th:text="${patientDto.city}"></td>
+                <td th:text="${patientDto.street}"></td>
+                <td th:text="${patientDto.zipcode}"></td>
                 <td th:text="${patientDto.phoneNumber}"></td>
+                <td>
+                    <a href="#" th:href="@{/patients/{id}/edit (id=${patientDto.id})}"
+                       class="btn btn-primary" role="button">수정</a>
+                </td>
             </tr>
             </tbody>
         </table>

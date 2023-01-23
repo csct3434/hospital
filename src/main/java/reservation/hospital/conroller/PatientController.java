@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import reservation.hospital.conroller.dto.PatientDto;
-import reservation.hospital.conroller.form.PatientForm;
 import reservation.hospital.domain.Address;
 import reservation.hospital.domain.Patient;
 import reservation.hospital.service.PatientService;
@@ -21,14 +21,14 @@ public class PatientController {
 
     @GetMapping("patients/new")
     public String createForm(Model model) {
-        model.addAttribute("patientForm", new PatientForm());
+        model.addAttribute("patientDto", new PatientDto());
         return "patients/createPatientForm";
     }
 
     @PostMapping("patients/new")
-    public String create(PatientForm patientForm, Model model) {
-        Address address = Address.create(patientForm.getCity(), patientForm.getStreet(), patientForm.getZipcode());
-        Patient patient = Patient.create(patientForm.getName(), patientForm.getAge(), patientForm.getSex(), address, patientForm.getPhoneNumber());
+    public String create(PatientDto patientDto) {
+        Address address = Address.create(patientDto.getCity(), patientDto.getStreet(), patientDto.getZipcode());
+        Patient patient = Patient.create(patientDto.getName(), patientDto.getAge(), patientDto.getSex(), address, patientDto.getPhoneNumber());
 
         patientService.join(patient);
         return "redirect:/";
@@ -40,4 +40,29 @@ public class PatientController {
         model.addAttribute("patientDtoList", patientDtoList);
         return "patients/patientList";
     }
+
+    @GetMapping("patients/{patientId}/edit")
+    public String updateForm(@PathVariable("patientId") Long patientId, Model model) {
+        PatientDto patientDto = patientService.getPatientDto(patientId);
+
+        model.addAttribute("patientDto", patientDto);
+        return "patients/updatePatientForm.html";
+    }
+
+    @PostMapping("patients/{patientId}/edit")
+    public String update(PatientDto patientDto, Model model) {
+        Address address = Address.create(patientDto.getCity(), patientDto.getStreet(), patientDto.getZipcode());
+        Patient patient = Patient.create(patientDto.getId(), patientDto.getName(), patientDto.getAge(),
+                patientDto.getSex(), address, patientDto.getPhoneNumber());
+
+        patientService.join(patient);
+        return "redirect:/patients";
+    }
+
+    @GetMapping("patients/{patientId}/remove")
+    public String remove(@PathVariable("patientId") Long patientId, Model model) {
+        patientService.remove(patientId);
+        return "redirect:/";
+    }
+
 }

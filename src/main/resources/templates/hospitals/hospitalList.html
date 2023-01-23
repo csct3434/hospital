@@ -14,16 +14,21 @@
                 <th>거리</th>
                 <th>우편번호</th>
                 <th>전화번호</th>
+                <th>        </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="hospitalDto : ${hospitalDtoList}">
                 <td th:text="${hospitalDto.id}"></td>
                 <td th:text="${hospitalDto.name}"></td>
-                <td th:text="${hospitalDto.address?.city}"></td>
-                <td th:text="${hospitalDto.address?.street}"></td>
-                <td th:text="${hospitalDto.address?.zipcode}"></td>
+                <td th:text="${hospitalDto.city}"></td>
+                <td th:text="${hospitalDto.street}"></td>
+                <td th:text="${hospitalDto.zipcode}"></td>
                 <td th:text="${hospitalDto.phoneNumber}"></td>
+                <td>
+                    <a href="#" th:href="@{/hospitals/{id}/edit (id=${hospitalDto.id})}"
+                       class="btn btn-primary" role="button">수정</a>
+                </td>
             </tr>
             </tbody>
         </table>

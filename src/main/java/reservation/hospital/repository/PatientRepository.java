@@ -14,7 +14,11 @@ public class PatientRepository {
     private final EntityManager em;
 
     public void save(Patient patient) {
-        em.persist(patient);
+        if(patient.getId() == null) {
+            em.persist(patient);
+        } else {
+            em.merge(patient);
+        }
     }
 
     public Patient findOne(Long id) {
@@ -30,5 +34,10 @@ public class PatientRepository {
         return em.createQuery("select p from Patient p where p.name = :name", Patient.class)
                 .setParameter("name", name)
                 .getResultList();
+    }
+
+    public void remove(Long patientId) {
+        Patient patient = em.find(Patient.class, patientId);
+        em.remove(patient);
     }
 }

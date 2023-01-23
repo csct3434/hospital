@@ -14,7 +14,11 @@ public class DepartmentRepository {
     private final EntityManager em;
 
     public void save(Department department) {
-        em.persist(department);
+        if(department.getId() == null) {
+            em.persist(department);
+        } else {
+            em.merge(department);
+        }
     }
 
     public Department findOne(Long id) {
@@ -32,4 +36,8 @@ public class DepartmentRepository {
                 .getResultList();
     }
 
+    public void remove(Long departmentId) {
+        Department department = em.find(Department.class, departmentId);
+        em.remove(department);
+    }
 }

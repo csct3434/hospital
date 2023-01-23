@@ -3,6 +3,7 @@ package reservation.hospital.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reservation.hospital.conroller.dto.DepartmentDto;
 import reservation.hospital.conroller.dto.DoctorDto;
 import reservation.hospital.domain.Department;
 import reservation.hospital.domain.Doctor;
@@ -26,18 +27,20 @@ public class DoctorService {
     @Transactional
     public Long join(Doctor doctor, Long hospitalId, Long departmentId) {
         // 의사면허 중복 조회
-        validateLicenseId(doctor.getLicenseId());
+        if(doctor.getId() == null) {
+            validateLicenseId(doctor.getLicenseId());
+        }
 
         // 엔티티 조회
         Hospital hospital = hospitalRepository.findOne(hospitalId);
         Department department = departmentRepository.findOne(departmentId);
 
-        // 의사 등록
-        doctorRepository.save(doctor);
-        // 의사 병원 등록
+        // 병원에 의사 정보 등록
         hospital.addDoctor(doctor);
-        // 의사 부서 등록
+        // 부서에 의사 정보 등록
         department.addDoctor(doctor);
+        // DB에 의사 저장
+        doctorRepository.save(doctor);
 
         return doctor.getId();
     }
@@ -61,15 +64,31 @@ public class DoctorService {
         }
     }
 
+    public DoctorDto getDoctorDto(Long doctorId) {
+        Doctor doctor = doctorRepository.findOne(doctorId);
+
+        DoctorDto doctorDto = new DoctorDto(doctor.getId(), doctor.getName(), doctor.getLicenseId(), doctor.getExperience(),
+                doctor.getHospital().getId(), doctor.getHospital().getName(),
+                doctor.getDepartment().getId(), doctor.getDepartment().getName());
+
+        return doctorDto;
+    }
+
     public List<DoctorDto> getDoctorDtoList() {
         List<Doctor> doctorList = findAll();
         List<DoctorDto> doctorDtoList = new ArrayList<>();
 
         for (Doctor doctor : doctorList) {
             doctorDtoList.add(new DoctorDto(doctor.getId(), doctor.getName(), doctor.getLicenseId(), doctor.getExperience(),
-                    doctor.getHospital().getName(), doctor.getDepartment().getName()));
+                    doctor.getHospital().getId(), doctor.getHospital().getName(),
+                    doctor.getDepartment().getId(), doctor.getDepartment().getName()));
         }
 
         return doctorDtoList;
+    }
+
+    @Transactional
+    public void remove(Long doctorId) {
+        doctorRepository.remove(doctorId);
     }
 }

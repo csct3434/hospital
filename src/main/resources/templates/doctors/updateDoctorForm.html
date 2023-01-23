@@ -4,13 +4,22 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/reservations/new" th:object="${reservationDto}" method="post">
+    <form role="form" th:object="${doctorDto}" method="post">
+        <input type="hidden" th:field="*{id}" />
         <div class="form-group">
-            <label th:for="hospitalId">환자</label>
-            <input list="patients" class="form-control" th:field="*{patientId}"/>
-            <datalist id="patients">
-                <option th:each="patientDto : ${patientDtoList}" th:value="${patientDto.id}" th:label="${patientDto.name}">
-            </datalist>
+            <label th:for="name">이름</label>
+            <input type="text" th:field="*{name}" class="form-control"
+                   placeholder="이름을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="licenseId">라이센스</label>
+            <input type="text" th:field="*{licenseId}" class="form-control"
+                   placeholder="라이센스를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="experience">경력</label>
+            <input type="text" th:field="*{experience}" class="form-control"
+                   placeholder="경력을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="hospitalId">병원</label>
@@ -24,22 +33,13 @@
             <input list="departments" class="form-control" th:field="*{departmentId}"/>
             <datalist id="departments">
                 <option th:each="departmentDto : ${departmentDtoList}" th:value="${departmentDto.id}"
-                        th:label="${departmentDto.hospitalName} + ' ' + ${departmentDto.name}">
+                        th:label="${departmentDto.name} + ' ' + ${departmentDto.hospitalName}">
             </datalist>
-        </div>
-        <div class="form-group">
-            <label th:for="doctorId">의사</label>
-            <input list="doctors" class="form-control" th:field="*{doctorId}"/>
-            <datalist id="doctors">
-                <option th:each="doctorDto : ${doctorDtoList}" th:value="${doctorDto.id}"
-                        th:label="${doctorDto.name} + ' ' + ${doctorDto.hospitalName} + ' ' + ${doctorDto.departmentName}">
-            </datalist>
-        </div>
-        <div class="form-group">
-            <label th:for="name">예약시간</label>
-            <input type="datetime-local" th:field="*{reservationTime}"/>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary"
+                th:onclick="|location.href='@{/doctors/{id}/remove (id=${doctorDto.id})}'|">
+            Remove</button>
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer" />

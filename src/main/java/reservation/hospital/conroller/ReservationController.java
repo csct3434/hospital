@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import reservation.hospital.conroller.dto.*;
-import reservation.hospital.conroller.form.ReservationForm;
+import reservation.hospital.domain.Department;
+import reservation.hospital.domain.Doctor;
 import reservation.hospital.domain.Reservation;
 import reservation.hospital.service.*;
 
@@ -28,21 +30,20 @@ public class ReservationController {
         List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
         List<DepartmentDto> departmentDtoList = departmentService.getDepartmentDtoList();
         List<DoctorDto> doctorDtoList = doctorService.getDoctorDtoList();
-        ReservationForm reservationForm = new ReservationForm();
+        ReservationDto reservationDto = new ReservationDto();
 
         model.addAttribute("patientDtoList", patientDtoList);
         model.addAttribute("hospitalDtoList", hospitalDtoList);
         model.addAttribute("departmentDtoList", departmentDtoList);
         model.addAttribute("doctorDtoList", doctorDtoList);
-        model.addAttribute("reservationForm", reservationForm);
+        model.addAttribute("reservationDto", reservationDto);
 
         return "reservations/createReservationForm";
     }
 
     @PostMapping("/reservations/new")
-    public String create(ReservationForm reservationForm, Model model) {
-        reservationService.join(reservationForm.getPatientId(), reservationForm.getHospitalId(), reservationForm.getDepartmentId(),
-                reservationForm.getDoctorId(), reservationForm.getReservationTime());
+    public String create(ReservationDto reservationDto, Model model) {
+        reservationService.join(reservationDto);
 
         return "redirect:/";
     }
@@ -53,4 +54,53 @@ public class ReservationController {
         model.addAttribute("reservationDtoList", reservationDtoList);
         return "reservations/reservationList";
     }
+
+    @GetMapping("reservations/{reservationId}/edit")
+    public String updateForm(@PathVariable("reservationId") Long reservationId, Model model) {
+        ReservationDto reservationDto = reservationService.getReservationDto(reservationId);
+        List<HospitalDto> hospitalDtoList = hospitalService.getHospitalDtoList();
+        List<DepartmentDto> departmentDtoList = departmentService.getDepartmentDtoList();
+        List<DoctorDto> doctorDtoList = doctorService.getDoctorDtoList();
+
+        model.addAttribute("reservationDto", reservationDto);
+        model.addAttribute("hospitalDtoList", hospitalDtoList);
+        model.addAttribute("departmentDtoList", departmentDtoList);
+        model.addAttribute("doctorDtoList", doctorDtoList);
+
+        return "reservations/updateReservationForm";
+    }
+
+    @PostMapping("reservations/{reservationId}/edit")
+    public String update(ReservationDto reservationDto) {
+        reservationService.join(reservationDto);
+        return "redirect:/reservations";
+    }
+
+    @GetMapping("reservations/{reservationId}/cancel")
+    public String cancel(@PathVariable("reservationId") Long reservationId) {
+        reservationService.cancel(reservationId);
+        return "redirect:/reservations";
+    }
+
+    @GetMapping("reservations/{reservationId}/remove")
+    public String remove(@PathVariable("reservationId") Long reservationId) {
+        reservationService.remove(reservationId);
+        return "redirect:/reservations";
+    }
+
+    @GetMapping("reservations/{reservationId}/complete")
+    public String completeForm(@PathVariable("reservationId") Long reservationId, Model model) {
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setId(reservationId);
+
+        model.addAttribute("reservationDto", reservationDto);
+        return "/reservations/completeReservationForm";
+    }
+
+    @PostMapping("reservations/{reservationId}/complete")
+    public String completeForm(ReservationDto reservationDto) {
+        reservationService.complete(reservationDto.getId(), reservationDto.getFee());
+        return "redirect:/reservations";
+    }
+
 }

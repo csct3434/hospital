@@ -24,6 +24,10 @@
                 <td th:text="${doctorDto.experience}"></td>
                 <td th:text="${doctorDto.hospitalName}"></td>
                 <td th:text="${doctorDto.departmentName}"></td>
+                <td>
+                    <a href="#" th:href="@{/doctors/{id}/edit (id=${doctorDto.id})}"
+                       class="btn btn-primary" role="button">수정</a>
+                </td>
             </tr>
             </tbody>
         </table>

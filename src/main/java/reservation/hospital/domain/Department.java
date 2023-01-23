@@ -20,18 +20,27 @@ public class Department {
 
     private String phoneNumber;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE)
     private List<Doctor> doctors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE)
     private List<Reservation> reservations = new ArrayList<>();
 
     public static Department create(String name, String phoneNumber) {
         Department department = new Department();
+        department.name = name;
+        department.phoneNumber = phoneNumber;
+
+        return department;
+    }
+
+    public static Department create(Long id, String name, String phoneNumber) {
+        Department department = new Department();
+        department.id = id;
         department.name = name;
         department.phoneNumber = phoneNumber;
 
@@ -49,5 +58,15 @@ public class Department {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", hospital=" + hospital +
+                '}';
     }
 }

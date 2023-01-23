@@ -32,9 +32,18 @@ public class Doctor {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE)
     private List<Reservation> reservations = new ArrayList<>();
 
+    public static Doctor create(Long id, String name, String licenseId, int experience) {
+        Doctor doctor = new Doctor();
+        doctor.id = id;
+        doctor.name = name;
+        doctor.licenseId = licenseId;
+        doctor.experience = experience;
+
+        return doctor;
+    }
 
     public static Doctor create(String name, String licenseId, int experience) {
         Doctor doctor = new Doctor();

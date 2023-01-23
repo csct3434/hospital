@@ -13,8 +13,12 @@ public class ReservationRepository {
 
     private final EntityManager em;
 
-    public void save(Reservation patient) {
-        em.persist(patient);
+    public void save(Reservation reservation) {
+        if(reservation.getId() == null) {
+            em.persist(reservation);
+        } else {
+            em.merge(reservation);
+        }
     }
 
     public Reservation findOne(Long id) {
@@ -32,4 +36,8 @@ public class ReservationRepository {
                 .getResultList();
     }
 
+    public void remove(Long reservationId) {
+        Reservation reservation = em.find(Reservation.class, reservationId);
+        em.remove(reservation);
+    }
 }

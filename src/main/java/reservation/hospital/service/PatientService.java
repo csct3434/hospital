@@ -35,15 +35,31 @@ public class PatientService {
         return patientRepository.findByName(name);
     }
 
+    public PatientDto getPatientDto(Long id) {
+        Patient patient = patientRepository.findOne(id);
+
+        PatientDto patientDto = new PatientDto(patient.getId(), patient.getName(), patient.getAge(),
+                patient.getSex(), patient.getAddress().getCity(), patient.getAddress().getStreet(),
+                patient.getAddress().getZipcode(), patient.getPhoneNumber());
+
+        return patientDto;
+    }
+
     public List<PatientDto> getPatientDtoList() {
-        List<Patient> patientList = findAll();
+        List<Patient> patientList = patientRepository.findAll();
         List<PatientDto> patientDtoList = new ArrayList<>();
 
         for (Patient patient : patientList) {
             patientDtoList.add(new PatientDto(patient.getId(), patient.getName(), patient.getAge(),
-                    patient.getSex(), patient.getAddress(), patient.getPhoneNumber()));
+                    patient.getSex(), patient.getAddress().getCity(), patient.getAddress().getStreet(),
+                    patient.getAddress().getZipcode(), patient.getPhoneNumber()));
         }
 
         return patientDtoList;
+    }
+
+    @Transactional
+    public void remove(Long patientId) {
+        patientRepository.remove(patientId);
     }
 }
